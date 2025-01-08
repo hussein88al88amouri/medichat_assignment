@@ -7,20 +7,20 @@ from llama_cpp import Llama
 import os
 import sys
 
-# Suppress unwanted outputs (e.g., from unsloth or other libraries)
-def suppress_output():
-    sys.stdout = open(os.devnull, 'w')  # Redirect stdout to devnull
-    sys.stderr = open(os.devnull, 'w')  # Redirect stderr to devnull
+# # Suppress unwanted outputs (e.g., from unsloth or other libraries)
+# def suppress_output():
+#     sys.stdout = open(os.devnull, 'w')  # Redirect stdout to devnull
+#     sys.stderr = open(os.devnull, 'w')  # Redirect stderr to devnull
 
-def restore_output():
-    sys.stdout = sys.__stdout__  # Restore stdout
-    sys.stderr = sys.__stderr__  # Restore stderr
+# def restore_output():
+#     sys.stdout = sys.__stdout__  # Restore stdout
+#     sys.stderr = sys.__stderr__  # Restore stderr
 
 # Load the model (GGUF format)
 @st.cache_resource
 def load_model():
     # Replace with the actual path to your GGUF model
-    model_path = "path/to/gguf-model.bin"
+    model_path = "helamouri/medichat_assignment"
     return Llama(model_path=model_path)
 
 # Generate a response using Llama.cpp
