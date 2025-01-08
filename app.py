@@ -19,14 +19,22 @@ import sys
 # Load the model (GGUF format)
 @st.cache_resource
 def load_model():
-    # Replace with the actual path to your GGUF model
-    # Replace with your repository and model file name
-    repo_id = "helamouri/medichat_assignment"
-    filename = "llama3_medichat.gguf"
-    # Download the file to a local path
-    model_path = hf_hub_download(repo_id=repo_id, filename=filename)
-    # model_path = "helamouri/medichat_assignment/blob/main/llama3_medichat.gguf"
-    return Llama(model_path=model_path)
+    # Define the repository and model filenames for both the base model and LoRA adapter
+    base_model_repo = "unsloth/meta-llama-3.1-8b-bnb-4bit"
+    base_model_filename = "model.safetensors"
+    adapter_repo = "helamouri/medichat_assignment"
+    adapter_filename = "llama3_medichat.gguf"  # assuming adapter is also in safetensors format
+
+    # Download the base model and adapter model to local paths
+    base_model_path = hf_hub_download(repo_id=base_model_repo, filename=base_model_filename)
+    adapter_model_path = hf_hub_download(repo_id=adapter_repo, filename=adapter_filename)
+
+    # Load the full model (base model) and the adapter (LoRA)
+    # Initialize the Llama model with base model path and adapter model path.
+    # Assuming Llama model supports loading the adapter dynamically during inference.
+    model = Llama(model_path=base_model_path, adapter_path=adapter_model_path)
+
+    return model
 
 # Generate a response using Llama.cpp
 def generate_response(model, prompt):
