@@ -32,6 +32,7 @@ def load_model():
     model = AutoModelForCausalLM.from_pretrained(model_name,
                                                  device_map="cpu",
                                                  revision="main",
+                                                 quantize=False,
                                                  torch_dtype=torch.float32
                                                  )
     return tokenizer, model
