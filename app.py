@@ -1,7 +1,9 @@
 import streamlit as st
 # from unsloth import FastLanguageModel
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
+# from transformers import AutoTokenizer, AutoModelForCausalLM
+# import torch
+from llama_cpp import Llama
+
 import os
 import sys
 
@@ -14,6 +16,24 @@ def restore_output():
     sys.stdout = sys.__stdout__  # Restore stdout
     sys.stderr = sys.__stderr__  # Restore stderr
 
+# Load the model (GGUF format)
+@st.cache_resource
+def load_model():
+    # Replace with the actual path to your GGUF model
+    model_path = "path/to/gguf-model.bin"
+    return Llama(model_path=model_path)
+
+# Generate a response using Llama.cpp
+def generate_response(model, prompt):
+    response = model(
+        prompt, 
+        max_tokens=200,  # Maximum tokens for the response
+        temperature=0.7,  # Adjust for creativity (lower = deterministic)
+        top_p=0.9,  # Nucleus sampling
+        stop=["\n"]  # Stop generating when newline is encountered
+    )
+    return response["choices"][0]["text"]
+
 # Load the model and tokenizer (GGUF format)
 # @st.cache_resource
 # def load_model():
@@ -23,37 +43,30 @@ def restore_output():
 #     return tokenizer, model
 
 
-@st.cache_resource
-def load_model():
-    model_name = "helamouri/medichat_assignment"  # Replace with your model's path
-    # Load the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    # Load the model (if it's a causal language model or suitable model type)
-    model = AutoModelForCausalLM.from_pretrained(model_name,
-                                                 device_map="cpu",
-                                                 revision="main",
-                                                 quantize=False,
-                                                 load_in_8bit=False,
-                                                 load_in_4bit=False,
-                                                 torch_dtype=torch.float32
-                                                 )
-    return tokenizer, model
+# @st.cache_resource
+# def load_model():
+#     model_name = "helamouri/medichat_assignment"  # Replace with your model's path
+#     # Load the tokenizer
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     # Load the model (if it's a causal language model or suitable model type)
+#     model = AutoModelForCausalLM.from_pretrained(model_name,
+#                                                  device_map="cpu",
+#                                                  revision="main",
+#                                                  quantize=False,
+#                                                  load_in_8bit=False,
+#                                                  load_in_4bit=False,
+#                                                  torch_dtype=torch.float32
+#                                                  )
+#     return tokenizer, model
 
 # Suppress unwanted outputs from unsloth or any other libraries during model loading
-suppress_output()
+#suppress_output()
 
-# Load model and tokenizer
-tokenizer, model = load_model()
-
-# Ensure the model is in inference mode
-model = FastLanguageModel.for_inference(model)
-
-# Move model to GPU if available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
-
+# Load the GGUF model
+model = load_model()
 # Restore stdout and stderr
-restore_output()
+
+#restore_output()
 
 # App layout
 st.title("MediChat: Your AI Medical Consultation Assistant")
@@ -65,21 +78,8 @@ user_input = st.text_input("Your Question:")
 if st.button("Get Response"):
     if user_input:
         with st.spinner("Generating response..."):
-            # Tokenize input and move the tensors to the appropriate device
-            inputs = tokenizer(user_input, return_tensors="pt").to(device)
-            
-            # Generate response
-            with torch.no_grad():  # Disable gradient calculation for inference
-                outputs = model.generate(
-                    inputs["input_ids"],
-                    max_length=200,
-                    num_return_sequences=1,
-                    use_cache=True
-                )
-            
-            # Decode the response
-            response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
+            # Generate Response
+            response = generate_response(model, user_input)
         # Display response
         st.text_area("Response:", value=response, height=200)
     else:

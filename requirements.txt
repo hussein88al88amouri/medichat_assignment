@@ -1,6 +1,6 @@
 # Install the multi-backend version of bitsandbytes
 https://github.com/bitsandbytes-foundation/bitsandbytes/releases/download/continuous-release_multi-backend-refactor/bitsandbytes-0.44.1.dev0-py3-none-manylinux_2_24_x86_64.whl
-
+llama-cpp-python
 datasets
 huggingface_hub[cli]
 unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
