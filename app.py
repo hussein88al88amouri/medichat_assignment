@@ -29,7 +29,11 @@ def load_model():
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     # Load the model (if it's a causal language model or suitable model type)
-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu", torch_dtype=torch.float32)
+    model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                 device_map="cpu",
+                                                 revision="main",
+                                                 torch_dtype=torch.float32
+                                                 )
     return tokenizer, model
 
 # Suppress unwanted outputs from unsloth or any other libraries during model loading
