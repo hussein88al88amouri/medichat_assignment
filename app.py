@@ -33,6 +33,8 @@ def load_model():
                                                  device_map="cpu",
                                                  revision="main",
                                                  quantize=False,
+                                                 load_in_8bit=False,
+                                                 load_in_4bit=False,
                                                  torch_dtype=torch.float32
                                                  )
     return tokenizer, model
