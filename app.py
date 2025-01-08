@@ -35,7 +35,7 @@ def load_model():
 
     # Load the full model (base model) and the adapter (LoRA)
     try:
-        model = Llama(model_path=base_model_path, adapter_path=adapter_model_path)
+        model = Llama(model_path=base_model_path) #, adapter_path=adapter_model_path)
         print("Model loaded successfully.")
     except ValueError as e:
         print(f"Error loading model: {e}")
