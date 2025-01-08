@@ -1,0 +1,115 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Python
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.3'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python3 -m venv .venv
+        . .venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Check for GPU Availability
+      id: gpu-check
+      run: |
+        if lspci | grep -i nvidia; then
+          echo "gpu=true" >> $GITHUB_ENV
+        else
+          echo "gpu=false" >> $GITHUB_ENV
+        fi
+
+    # Run tests
+    - name: Run Tests
+      if: env.gpu == 'true'
+      run: |
+        source .venv/bin/activate
+        pytest --maxfail=5 --disable-warnings
+
+    - name: Skip Tests (No GPU)
+      if: env.gpu == 'false'
+      run: |
+        echo "Skipping GPU-dependent tests: No GPU available."
+  
+  sync-to-hub:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set Git user identity
+        run: |
+          git config --global user.name "Hussein El Amouri"
+          git config --global user.email "alamouri@gmail.com"
+
+      # - name: Set up Git LFS
+      #   run: |
+      #     git lfs install  # Ensure Git LFS is installed and set up
+
+      # - name: Track large files with Git LFS
+      #   run: |
+      #     # Track specific large files that exceed the 10 MB limit
+      #     git lfs track "*.gguf"  # Add GGUF model to LFS
+      #     git lfs track "*.safetensors"  # Add safetensors model to LFS
+      #     git lfs track "*.pt"  # Add optimizer checkpoint to LFS
+      #     git lfs track "*.json"  # Add tokenizer to LFS
+
+      #     # Add .gitattributes file to the staging area for Git LFS tracking
+      #     git add .gitattributes
+
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+
+          # git lfs ls-files
+          # git lfs fetch --all
+          # git lfs pull
+          # git rev-parse --is-shallow-repository
+ 
+          git push https://helamouri:$HF_TOKEN@huggingface.co/spaces/helamouri/medichat_assignment main  --force # Push to Hugging Face
+
+      # - name: Set up Hugging Face CLI
+      #   run: |
+      #     pip install huggingface_hub
+
+      # - name: Login to Hugging Face
+      #   env:
+      #     HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      #   run: |
+      #     huggingface-cli login --token $HF_TOKEN
+
+      # - name: Sync with Hugging Face (including large files)
+      #   env:
+      #     HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      #   run: |
+      #     # Initialize git-lfs
+      #     git lfs install
+          
+      #     # Pull any LFS-tracked files (if needed)
+      #     git lfs pull
+          
+      #     # Push the repository to Hugging Face
+      #     huggingface-cli upload spaces/helamouri/medichat_assignment ./* ./medichat_assignment

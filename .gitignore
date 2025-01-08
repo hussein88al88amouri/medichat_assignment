@@ -1,0 +1,9 @@
+# Ignore large files that are tracked by Git LFS
+*.log
+
+# Ignore build directories (e.g., for Python, Java, etc.)
+env/
+
+
+# Ensure .gitattributes is not ignored (needed for Git LFS tracking)
+!.gitattributes

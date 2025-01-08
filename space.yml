@@ -1,0 +1,19 @@
+# docker-compose.yaml for Hugging Face Spaces
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"  # Default port for Streamlit or Gradio apps
+    environment:
+      HF_TOKEN: ${HF_TOKEN}  # Hugging Face API token
+    command: >
+      bash -c "
+      python3 -m venv .venv &&
+      . .venv/bin/activate &&
+      pip install -r requirements.txt &&
+      python main.py
+      "
