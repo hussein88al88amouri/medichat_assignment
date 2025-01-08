@@ -20,7 +20,7 @@ import sys
 @st.cache_resource
 def load_model():
     # Replace with the actual path to your GGUF model
-    model_path = "helamouri/medichat_assignment/llama3_medichat.gguf"
+    model_path = "helamouri/medichat_assignment/blob/main/llama3_medichat.gguf"
     return Llama(model_path=model_path)
 
 # Generate a response using Llama.cpp
