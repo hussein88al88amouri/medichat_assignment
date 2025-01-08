@@ -29,10 +29,17 @@ def load_model():
     base_model_path = hf_hub_download(repo_id=base_model_repo, filename=base_model_filename)
     adapter_model_path = hf_hub_download(repo_id=adapter_repo, filename=adapter_filename)
 
+    # Log paths for debugging
+    print(f"Base model path: {base_model_path}")
+    print(f"Adapter model path: {adapter_model_path}")
+
     # Load the full model (base model) and the adapter (LoRA)
-    # Initialize the Llama model with base model path and adapter model path.
-    # Assuming Llama model supports loading the adapter dynamically during inference.
-    model = Llama(model_path=base_model_path, adapter_path=adapter_model_path)
+    try:
+        model = Llama(model_path=base_model_path, adapter_path=adapter_model_path)
+        print("Model loaded successfully.")
+    except ValueError as e:
+        print(f"Error loading model: {e}")
+        raise
 
     return model
 
@@ -76,17 +83,20 @@ def generate_response(model, prompt):
 #suppress_output()
 
 # Load the GGUF model
+print('Loading the model')
 model = load_model()
 # Restore stdout and stderr
 
 #restore_output()
 
 # App layout
+print('Setting App layout')
 st.title("MediChat: Your AI Medical Consultation Assistant")
 st.markdown("Ask me anything about your health!")
 st.write("Enter your symptoms or medical questions below:")
 
 # User input
+print(f'Setting user interface')
 user_input = st.text_input("Your Question:")
 if st.button("Get Response"):
     if user_input:
