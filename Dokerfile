@@ -1,11 +1,22 @@
-# Use Python as the base image
-FROM python:3.9-slim
+# Use the official NVIDIA CUDA image as a base (you can adjust the CUDA version if needed)
+FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
+
+# Set environment variable to avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Python 3.9 and dependencies
+RUN apt-get update && \
+    apt-get install -y python3.9 python3.9-dev python3.9-venv python3.9-distutils curl && \
+    ln -s /usr/bin/python3.9 /usr/bin/python && \
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
 
 # Set the working directory
 WORKDIR /src
 
 # Copy the requirements and application files
-COPY requirements.txt .
+COPY requirements.txt . 
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all source code
