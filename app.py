@@ -20,7 +20,12 @@ import sys
 @st.cache_resource
 def load_model():
     # Replace with the actual path to your GGUF model
-    model_path = "helamouri/medichat_assignment/blob/main/llama3_medichat.gguf"
+    # Replace with your repository and model file name
+    repo_id = "helamouri/medichat_assignment"
+    filename = "llama3_medichat.gguf"
+    # Download the file to a local path
+    model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    # model_path = "helamouri/medichat_assignment/blob/main/llama3_medichat.gguf"
     return Llama(model_path=model_path)
 
 # Generate a response using Llama.cpp
