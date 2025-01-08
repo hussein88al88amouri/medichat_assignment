@@ -25,7 +25,7 @@ def restore_output():
 
 @st.cache_resource
 def load_model():
-    model_name = "helamouri/medichat"  # Replace with your model's path
+    model_name = "helamouri/medichat_assignment"  # Replace with your model's path
     # Load the tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     # Load the model (if it's a causal language model or suitable model type)
