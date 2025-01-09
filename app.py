@@ -20,8 +20,8 @@ import sys
 @st.cache_resource
 def load_model():
     # Define the repository and model filenames for both the base model and LoRA adapter
-    base_model_repo = "unsloth/meta-llama-3.1-8b-bnb-4bit"
-    base_model_filename = "model.safetensors"
+    base_model_repo = "helamouri/helamouri/Meta-Llama-3.1-8B-Q8_0.gguf"
+    base_model_filename = "Meta-Llama-3.1-8B-Q8_0.gguf"
     adapter_repo = "helamouri/medichat_assignment"
     adapter_filename = "llama3_medichat.gguf"  # assuming adapter is also in safetensors format
 
