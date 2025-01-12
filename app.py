@@ -59,29 +59,29 @@ def generate_response(model, prompt):
     return response["choices"][0]["text"]
 
 # Load the model and tokenizer (GGUF format)
-# @st.cache_resource
-# def load_model():
-#     model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's GGUF path
-#     model = FastLanguageModel.from_pretrained(model_name, device='cpu')  # Load the model using unsloth
-#     tokenizer = model.tokenizer  # Assuming the tokenizer is part of the GGUF model object
-#     return tokenizer, model
-
-
 @st.cache_resource
 def load_model():
-    model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's path
-    # Load the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    # Load the model (if it's a causal language model or suitable model type)
-    model = AutoModelForCausalLM.from_pretrained(model_name,
-                                                 device_map="cpu",
-                                                 revision="main",
-                                                 quantize=False,
-                                                 load_in_8bit=False,
-                                                 load_in_4bit=True,
-                                                 torch_dtype=torch.float32
-                                                 )
+    model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's GGUF path
+    model = FastLanguageModel.from_pretrained(model_name, device='cpu')  # Load the model using unsloth
+    tokenizer = model.tokenizer  # Assuming the tokenizer is part of the GGUF model object
     return tokenizer, model
+
+
+# @st.cache_resource
+# def load_model():
+#     model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's path
+#     # Load the tokenizer
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     # Load the model (if it's a causal language model or suitable model type)
+#     model = AutoModelForCausalLM.from_pretrained(model_name,
+#                                                  device_map="cpu",
+#                                                  revision="main",
+#                                                  quantize=False,
+#                                                  load_in_8bit=False,
+#                                                  load_in_4bit=True,
+#                                                  torch_dtype=torch.float32
+#                                                  )
+#     return tokenizer, model
 
 # Suppress unwanted outputs from unsloth or any other libraries during model loading
 #suppress_output()
