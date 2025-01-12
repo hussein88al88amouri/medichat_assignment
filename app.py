@@ -1,7 +1,7 @@
 import streamlit as st
-# from unsloth import FastLanguageModel
-# from transformers import AutoTokenizer, AutoModelForCausalLM
-# import torch
+from unsloth import FastLanguageModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import os
