@@ -45,6 +45,8 @@ def load_model():
 
 # Generate a response using Llama.cpp
 def generate_response(model, prompt):
+    print('prompt')
+    print(prompt)
     response = model(
         prompt, 
         max_tokens=200,  # Maximum tokens for the response
@@ -52,6 +54,8 @@ def generate_response(model, prompt):
         top_p=0.9,  # Nucleus sampling
         stop=["\n"]  # Stop generating when newline is encountered
     )
+    print('response["choices"]')
+    print(response["choices"])
     return response["choices"][0]["text"]
 
 # Load the model and tokenizer (GGUF format)
@@ -103,6 +107,8 @@ if st.button("Get Response"):
         with st.spinner("Generating response..."):
             # Generate Response
             response = generate_response(model, user_input)
+            print('Response')
+            print(response)
         # Display response
         st.text_area("Response:", value=response, height=200)
     else:
