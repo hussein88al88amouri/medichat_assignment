@@ -17,31 +17,31 @@ import sys
 #     sys.stderr = sys.__stderr__  # Restore stderr
 
 # Load the model (GGUF format)
-@st.cache_resource
-def load_model():
-    # Define the repository and model filenames for both the base model and LoRA adapter
-    base_model_repo = "helamouri/Meta-Llama-3.1-8B-Q8_0.gguf"
-    base_model_filename = "Meta-Llama-3.1-8B-Q8_0.gguf"
-    adapter_repo = "helamouri/medichat_assignment"
-    adapter_filename = "llama3_medichat.gguf"  # assuming adapter is also in safetensors format
+# @st.cache_resource
+# def load_model():
+#     # Define the repository and model filenames for both the base model and LoRA adapter
+#     base_model_repo = "helamouri/Meta-Llama-3.1-8B-Q8_0.gguf"
+#     base_model_filename = "Meta-Llama-3.1-8B-Q8_0.gguf"
+#     adapter_repo = "helamouri/medichat_assignment"
+#     adapter_filename = "llama3_medichat.gguf"  # assuming adapter is also in safetensors format
 
-    # Download the base model and adapter model to local paths
-    base_model_path = hf_hub_download(repo_id=base_model_repo, filename=base_model_filename)
-    adapter_model_path = hf_hub_download(repo_id=adapter_repo, filename=adapter_filename)
+#     # Download the base model and adapter model to local paths
+#     base_model_path = hf_hub_download(repo_id=base_model_repo, filename=base_model_filename)
+#     adapter_model_path = hf_hub_download(repo_id=adapter_repo, filename=adapter_filename)
 
-    # Log paths for debugging
-    print(f"Base model path: {base_model_path}")
-    print(f"Adapter model path: {adapter_model_path}")
+#     # Log paths for debugging
+#     print(f"Base model path: {base_model_path}")
+#     print(f"Adapter model path: {adapter_model_path}")
 
-    # Load the full model (base model) and the adapter (LoRA)
-    try:
-        model = Llama(model_path=base_model_path) #, adapter_path=adapter_model_path)
-        print("Model loaded successfully.")
-    except ValueError as e:
-        print(f"Error loading model: {e}")
-        raise
+#     # Load the full model (base model) and the adapter (LoRA)
+#     try:
+#         model = Llama(model_path=base_model_path) #, adapter_path=adapter_model_path)
+#         print("Model loaded successfully.")
+#     except ValueError as e:
+#         print(f"Error loading model: {e}")
+#         raise
 
-    return model
+#     return model
 
 # Generate a response using Llama.cpp
 def generate_response(model, prompt):
@@ -61,27 +61,27 @@ def generate_response(model, prompt):
 # Load the model and tokenizer (GGUF format)
 # @st.cache_resource
 # def load_model():
-#     model_name = "helamouri/lora_model"  # Replace with your model's GGUF path
+#     model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's GGUF path
 #     model = FastLanguageModel.from_pretrained(model_name, device='cpu')  # Load the model using unsloth
 #     tokenizer = model.tokenizer  # Assuming the tokenizer is part of the GGUF model object
 #     return tokenizer, model
 
 
-# @st.cache_resource
-# def load_model():
-#     model_name = "helamouri/medichat_assignment"  # Replace with your model's path
-#     # Load the tokenizer
-#     tokenizer = AutoTokenizer.from_pretrained(model_name)
-#     # Load the model (if it's a causal language model or suitable model type)
-#     model = AutoModelForCausalLM.from_pretrained(model_name,
-#                                                  device_map="cpu",
-#                                                  revision="main",
-#                                                  quantize=False,
-#                                                  load_in_8bit=False,
-#                                                  load_in_4bit=False,
-#                                                  torch_dtype=torch.float32
-#                                                  )
-#     return tokenizer, model
+@st.cache_resource
+def load_model():
+    model_name = "helamouri/model_medichat_finetuned_v1"  # Replace with your model's path
+    # Load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    # Load the model (if it's a causal language model or suitable model type)
+    model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                 device_map="cpu",
+                                                 revision="main",
+                                                 quantize=False,
+                                                 load_in_8bit=False,
+                                                 load_in_4bit=True,
+                                                 torch_dtype=torch.float32
+                                                 )
+    return tokenizer, model
 
 # Suppress unwanted outputs from unsloth or any other libraries during model loading
 #suppress_output()
